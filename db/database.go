@@ -4,30 +4,22 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"crud-transaction/config"
 	"crud-transaction/models"
 )
 
 var DB *gorm.DB
 
 func InitDB() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath("./config")
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
-	}
-
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
-		viper.GetString("database.host"),
-		viper.GetString("database.username"),
-		viper.GetString("database.password"),
-		viper.GetString("database.dbname"),
-		viper.GetInt("database.port"))
+		config.GetDatabaseHost(),
+		config.GetDatabaseUser(),
+		config.GetDatabasePassword(),
+		config.GetDatabaseName(),
+		config.GetDatabasePort())
 
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})

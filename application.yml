@@ -1,0 +1,6 @@
+database:
+  host: "localhost"
+  user: "postgres"
+  password: "password"
+  dbname: "transaction_db"
+  port: "5432"

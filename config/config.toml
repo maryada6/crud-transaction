@@ -1,6 +1,0 @@
-[database]
-username = "postgres"
-password = "postgres"
-host = "localhost"
-port = 5432
-dbname = "transaction_db"
