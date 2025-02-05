@@ -27,6 +27,9 @@ func InitDB() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	DB.AutoMigrate(&models.Transaction{})
+	err = DB.AutoMigrate(&models.Transaction{})
+	if err != nil {
+		log.Fatalf("Failed to apply database migrations: %v", err)
+	}
 	fmt.Println("Database connected successfully and migrations applied")
 }

@@ -18,7 +18,11 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(transaction)
+	err := json.NewEncoder(w).Encode(transaction)
+	if err != nil {
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
 }
 
 func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +40,11 @@ func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 		transactionIDs = append(transactionIDs, transaction.ID)
 	}
 
-	json.NewEncoder(w).Encode(transactionIDs)
+	err := json.NewEncoder(w).Encode(transactionIDs)
+	if err != nil {
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
 }
 
 func GetTransactionSum(w http.ResponseWriter, r *http.Request) {
@@ -44,5 +52,9 @@ func GetTransactionSum(w http.ResponseWriter, r *http.Request) {
 
 	sum := helpers.CalculateSum(transactionID)
 
-	json.NewEncoder(w).Encode(map[string]float64{"sum": sum})
+	err := json.NewEncoder(w).Encode(map[string]float64{"sum": sum})
+	if err != nil {
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
 }
