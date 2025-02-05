@@ -10,7 +10,11 @@ import (
 )
 
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
-	transactionID, _ := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
+	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
 
 	var transaction models.Transaction
 	if err := db.DB.First(&transaction, transactionID).Error; err != nil {
@@ -18,7 +22,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(transaction)
+	err = json.NewEncoder(w).Encode(transaction)
 	if err != nil {
 		http.Error(w, "Error encoding response", http.StatusInternalServerError)
 		return
@@ -28,16 +32,12 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 	typeName := r.URL.Path[len("/transactionservice/types/"):]
 
-	var transactions []models.Transaction
 	var transactionIDs []int64
-
-	if err := db.DB.Where("type = ?", typeName).Find(&transactions).Error; err != nil {
-		http.Error(w, "Error retrieving transactions", http.StatusInternalServerError)
+	if err := db.DB.Model(&models.Transaction{}).
+		Where("type = ?", typeName).
+		Pluck("id", &transactionIDs).Error; err != nil {
+		http.Error(w, "Error retrieving transaction IDs", http.StatusInternalServerError)
 		return
-	}
-
-	for _, transaction := range transactions {
-		transactionIDs = append(transactionIDs, transaction.ID)
 	}
 
 	err := json.NewEncoder(w).Encode(transactionIDs)
@@ -48,11 +48,15 @@ func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTransactionSum(w http.ResponseWriter, r *http.Request) {
-	transactionID, _ := strconv.ParseInt(r.URL.Path[len("/transactionservice/sum/"):], 10, 64)
+	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/sum/"):], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
 
 	sum := helpers.CalculateSum(transactionID)
 
-	err := json.NewEncoder(w).Encode(map[string]float64{"sum": sum})
+	err = json.NewEncoder(w).Encode(map[string]float64{"sum": sum})
 	if err != nil {
 		http.Error(w, "Error encoding response", http.StatusInternalServerError)
 		return

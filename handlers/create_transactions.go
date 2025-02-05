@@ -10,10 +10,15 @@ import (
 )
 
 func CreateTransaction(w http.ResponseWriter, r *http.Request) {
-	transactionID, _ := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
+	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
+
+	if err != nil {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
 
 	var transaction models.Transaction
-	err := json.NewDecoder(r.Body).Decode(&transaction)
+	err = json.NewDecoder(r.Body).Decode(&transaction)
 	if err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
