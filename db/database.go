@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"log"
-	"sync"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,30 +11,27 @@ import (
 	"crud-transaction/models"
 )
 
-var (
-	DB   *gorm.DB
-	once sync.Once
-)
+var DB *gorm.DB
 
 func InitDB() {
-	once.Do(func() {
+	if DB == nil {
 		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 			config.GetDatabaseHost(),
 			config.GetDatabaseUser(),
 			config.GetDatabasePassword(),
 			config.GetDatabaseName(),
 			config.GetDatabasePort())
-
+		log.Println("Connecting to database...", dsn)
 		var err error
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
-			log.Fatalf("Failed to connect to database: %v", err)
+			log.Panic("Failed to connect to database")
 		}
 
 		err = DB.AutoMigrate(&models.Transaction{})
 		if err != nil {
-			log.Fatalf("Failed to apply database migrations: %v", err)
+			log.Panic("Failed to apply database migrations")
 		}
 		fmt.Println("Database connected successfully and migrations applied")
-	})
+	}
 }

@@ -1,21 +1,22 @@
 package config
 
 func GetDatabaseHost() string {
-	return GetStringOrPanic("database.host")
+	return GetStringOrPanic("DATABASE_HOST")
 }
 
 func GetDatabaseUser() string {
-	return GetStringOrPanic("database.user")
+	return GetStringOrPanic("DATABASE_USER")
 }
 
+
 func GetDatabasePassword() string {
-	return GetStringOrPanic("database.password")
+	return GetStringOrPanic("DATABASE_PASSWORD")
 }
 
 func GetDatabaseName() string {
-	return GetStringOrPanic("database.dbname")
+	return GetStringOrPanic("DATABASE_NAME")
 }
 
 func GetDatabasePort() int {
-	return GetIntWithDefault("database.port", 5432)
+	return GetIntWithDefault("DATABASE_PORT", 5432)
 }
