@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,5 +13,5 @@ func main() {
 	config.Load()
 	log.Println("Starting Transaction Service API...")
 	router := routes.SetupRouter()
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.GetServerPort()), router))
 }

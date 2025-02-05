@@ -32,3 +32,7 @@ func Load() {
 	}
 	log.Printf("Using config file: %s", viper.ConfigFileUsed())
 }
+
+func GetServerPort() int {
+	return GetIntWithDefault("PORT", 3000)
+}
