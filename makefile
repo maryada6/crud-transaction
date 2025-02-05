@@ -1,12 +1,12 @@
 .PHONY: default
 
 SHELL := /bin/bash # Use bash syntax
-
 APP_EXECUTABLE="out/transaction-service"
-
 GOPATH=$(shell go env GOPATH)
+ENV="test"
 
-export GOPATH~
+export GOPATH
+export ENV
 default: setup lint test build
 
 setup: --cp-config ## Install all the dependencies
@@ -23,7 +23,7 @@ lint:  ## Run all the linters
 
 build: ## Build the application
 	mkdir -p out/
-	GO111MODULE=on go build -o $(APP_EXECUTABLE) ./
+	GO111MODULE=on go build -o $(APP_EXECUTABLE) ./cmd/server
 
 run: build ## Run the application
 	./$(APP_EXECUTABLE) server
