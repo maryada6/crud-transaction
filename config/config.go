@@ -30,9 +30,8 @@ func Load() {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file: %v", err)
 	}
-	log.Printf("Using config file: %s", viper.ConfigFileUsed())
 }
 
 func GetServerPort() int {
-	return GetIntWithDefault("PORT", 3000)
+	return GetIntWithDefault("PORT", 0)
 }

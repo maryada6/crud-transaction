@@ -26,3 +26,4 @@ go.work.sum
 
 application.yml
 out/
+coverage/

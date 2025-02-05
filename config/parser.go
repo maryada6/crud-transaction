@@ -25,16 +25,6 @@ func GetStringWithDefault(key string, defaultValue string) string {
 	return val
 }
 
-func GetIntOrPanic(key string) int {
-	v := GetStringOrPanic(key)
-	value, err := strconv.Atoi(v)
-	if err != nil {
-		panic(fmt.Sprintf("key %s should be number, error : %s", key, err))
-	}
-
-	return value
-}
-
 func GetIntWithDefault(key string, defaultValue int) int {
 	v := viper.GetString(key)
 	value, err := strconv.Atoi(v)

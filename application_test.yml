@@ -1,5 +1,5 @@
 database:
-  host: "localhost"
+  host: "127.0.0.1"
   user: "postgres"
   password: "password"
   dbname: "transaction_db_test"
