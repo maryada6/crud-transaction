@@ -46,8 +46,10 @@ The executable will be created at `out/transaction-service`.
 ### Running the Application
 
 ```bash
-make run
+ENV="ENVIRONMENT" make run
 ```
+
+Here ENV can be test or dev
 
 ### Running Tests
 
