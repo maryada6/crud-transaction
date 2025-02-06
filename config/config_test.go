@@ -20,7 +20,28 @@ func TestGetServerPort(t *testing.T) {
 		assert.Equal(t, "password", GetDatabasePassword())
 		assert.Equal(t, "transaction_db_test", GetDatabaseName())
 	})
+
+	t.Run("should load default production config", func(t *testing.T) {
+		resetFn := setAndLoad("ENV", "production")
+		Load()
+		defer resetFn()
+
+		assert.Equal(t, 0, GetServerPort())
+	})
 }
+
+func TestGetStringOrPanic(t *testing.T) {
+	t.Run("should panic", func(t *testing.T) {
+		assert.Panics(t, func() { GetStringOrPanic("TEST") })
+	})
+
+	t.Run("should not panic", func(t *testing.T) {
+		resetFn := setAndLoad("ENV", "test")
+		defer resetFn()
+		assert.NotPanics(t, func() { GetStringOrPanic("ENV") })
+	})
+}
+
 func setAndLoad(key, value string) func() {
 	resetFn := unsetAndLoad(key)
 

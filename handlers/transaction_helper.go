@@ -1,11 +1,11 @@
-package helpers
+package handlers
 
 import (
 	"crud-transaction/db"
 	"crud-transaction/models"
 )
 
-func CalculateSum(transactionID int64) float64 {
+func calculateSum(transactionID int64) float64 {
 	var transaction models.Transaction
 	db.DB.First(&transaction, transactionID)
 
@@ -15,7 +15,7 @@ func CalculateSum(transactionID int64) float64 {
 	db.DB.Where("parent_id = ?", transactionID).Find(&childTransactions)
 
 	for _, child := range childTransactions {
-		total += CalculateSum(child.ID)
+		total += calculateSum(child.ID)
 	}
 
 	return total

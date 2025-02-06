@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"crud-transaction/db"
-	"crud-transaction/helpers"
 	"crud-transaction/models"
 	"encoding/json"
 	"net/http"
@@ -32,6 +31,11 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 	typeName := r.URL.Path[len("/transactionservice/types/"):]
 
+	if typeName == "" {
+		http.Error(w, "Transaction type is required", http.StatusBadRequest)
+		return
+	}
+
 	var transactionIDs []int64
 	if err := db.DB.Model(&models.Transaction{}).
 		Where("type = ?", typeName).
@@ -54,7 +58,7 @@ func GetTransactionSum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sum := helpers.CalculateSum(transactionID)
+	sum := calculateSum(transactionID)
 
 	err = json.NewEncoder(w).Encode(map[string]float64{"sum": sum})
 	if err != nil {
