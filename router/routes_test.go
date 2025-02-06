@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"crud-transaction/config"
 	"crud-transaction/db"
 	"crud-transaction/models"
 	"encoding/json"
@@ -13,7 +12,6 @@ import (
 )
 
 func TestSetupRouter(t *testing.T) {
-	config.Load()
 	db.InitDB()
 	router := SetupRouter()
 

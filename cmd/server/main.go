@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	config.Load()
 	db.InitDB()
 
 	log.Println("Starting Transaction Service API")

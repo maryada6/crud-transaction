@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,10 +8,8 @@ import (
 
 func TestGetServerPort(t *testing.T) {
 	t.Run("should load test config", func(t *testing.T) {
-		resetFn := setAndLoad("ENV", "test")
-		Load()
+		resetFn := SetAndLoad("ENV", "test")
 		defer resetFn()
-
 		assert.Equal(t, 0, GetServerPort())
 		assert.Equal(t, "127.0.0.1", GetDatabaseHost())
 		assert.Equal(t, 5432, GetDatabasePort())
@@ -28,28 +25,8 @@ func TestGetStringOrPanic(t *testing.T) {
 	})
 
 	t.Run("should not panic", func(t *testing.T) {
-		resetFn := setAndLoad("ENV", "test")
+		resetFn := SetAndLoad("ENV", "test")
 		defer resetFn()
 		assert.NotPanics(t, func() { GetStringOrPanic("ENV") })
 	})
-}
-
-func setAndLoad(key, value string) func() {
-	resetFn := unsetAndLoad(key)
-
-	os.Setenv(key, value)
-	Load()
-
-	return resetFn
-}
-
-func unsetAndLoad(key string) func() {
-	originalValue := os.Getenv(key)
-	os.Unsetenv(key)
-	Load()
-
-	return func() {
-		os.Setenv(key, originalValue)
-		Load()
-	}
 }

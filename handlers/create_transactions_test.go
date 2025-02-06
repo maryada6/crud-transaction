@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"crud-transaction/config"
 	"crud-transaction/db"
 	"crud-transaction/models"
 
@@ -15,7 +14,6 @@ import (
 )
 
 func TestCreateTransaction(t *testing.T) {
-	config.Load()
 	db.InitDB()
 
 	transactionHandler := NewTransactionHandler()

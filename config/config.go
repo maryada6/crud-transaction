@@ -2,11 +2,12 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
 
-func Load() {
+func load() {
 	viper.AutomaticEnv()
 	_ = viper.ReadInConfig()
 
@@ -33,4 +34,28 @@ func Load() {
 
 func GetServerPort() int {
 	return GetIntWithDefault("PORT", 0)
+}
+
+func SetAndLoad(key, value string) func() {
+	resetFn := UnsetAndLoad(key)
+
+	os.Setenv(key, value)
+	load()
+
+	return resetFn
+}
+
+func UnsetAndLoad(key string) func() {
+	originalValue := os.Getenv(key)
+	os.Unsetenv(key)
+	load()
+
+	return func() {
+		os.Setenv(key, originalValue)
+		load()
+	}
+}
+
+func init() {
+	load()
 }

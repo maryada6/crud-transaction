@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"crud-transaction/config"
 	"crud-transaction/db"
 	"crud-transaction/models"
 
@@ -14,7 +13,6 @@ import (
 )
 
 func TestGetTransaction(t *testing.T) {
-	config.Load()
 	db.InitDB()
 
 	transactionHandler := NewTransactionHandler()
@@ -65,7 +63,6 @@ func TestGetTransaction(t *testing.T) {
 }
 
 func TestGetTransactionsByType(t *testing.T) {
-	config.Load()
 	db.InitDB()
 
 	transactionHandler := NewTransactionHandler()
@@ -116,7 +113,6 @@ func TestGetTransactionsByType(t *testing.T) {
 }
 
 func TestGetTransactionSum(t *testing.T) {
-	config.Load()
 	db.InitDB()
 
 	transactionHandler := NewTransactionHandler()
