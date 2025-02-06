@@ -1,9 +1,9 @@
 .PHONY: default
 
+ENV="test"
 SHELL := /bin/bash # Use bash syntax
 APP_EXECUTABLE="out/transaction-service"
 GOPATH=$(shell go env GOPATH)
-ENV="test"
 
 export ENV
 export GOPATH
