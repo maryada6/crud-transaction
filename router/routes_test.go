@@ -3,6 +3,8 @@ package routes
 import (
 	"crud-transaction/config"
 	"crud-transaction/db"
+	"crud-transaction/models"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -16,10 +18,23 @@ func TestSetupRouter(t *testing.T) {
 	router := SetupRouter()
 
 	t.Run("valid GET transaction", func(t *testing.T) {
+		defer truncateDB()
+		transaction := models.Transaction{
+			ID:     1,
+			Type:   "shopping",
+			Amount: 100.50,
+		}
+		db.DB.Create(&transaction)
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/1", nil)
 		resp := httptest.NewRecorder()
 		router.ServeHTTP(resp, req)
-		assert.Equal(t, http.StatusNotFound, resp.Code)
+		assert.Equal(t, http.StatusOK, resp.Code)
+		var response models.Transaction
+		err := json.Unmarshal(resp.Body.Bytes(), &response)
+		assert.NoError(t, err)
+		assert.Equal(t, transaction.ID, response.ID)
+		assert.Equal(t, transaction.Type, response.Type)
+		assert.Equal(t, transaction.Amount, response.Amount)
 	})
 
 	t.Run("invalid route", func(t *testing.T) {
@@ -28,4 +43,8 @@ func TestSetupRouter(t *testing.T) {
 		router.ServeHTTP(resp, req)
 		assert.Equal(t, http.StatusNotFound, resp.Code)
 	})
+}
+
+func truncateDB() {
+	db.DB.Exec("TRUNCATE TABLE transactions")
 }
