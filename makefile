@@ -3,7 +3,9 @@
 SHELL := /bin/bash # Use bash syntax
 APP_EXECUTABLE="out/transaction-service"
 GOPATH=$(shell go env GOPATH)
+ENV="test"
 
+export ENV
 export GOPATH
 default: setup lint test build
 
@@ -28,7 +30,7 @@ run: build ## Run the application
 
 test: ## Run all the tests
 	mkdir -p coverage/
-	ENV="test" GO111MODULE=on go clean -testcache && go test -race ./... -covermode=atomic -coverprofile=coverage/coverage.out
+	GO111MODULE=on go clean -testcache && go test -race ./... -p 1 -covermode=atomic -coverprofile=coverage/coverage.out
 
 test.cover: test ## Generate coverage report
 	GO111MODULE=on gocov convert coverage/coverage.out | gocov report 2>&1 | tee coverage/coverage.txt

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -29,4 +30,24 @@ func TestGetStringOrPanic(t *testing.T) {
 		defer resetFn()
 		assert.NotPanics(t, func() { GetStringOrPanic("ENV") })
 	})
+}
+
+func SetAndLoad(key, value string) func() {
+	resetFn := UnsetAndLoad(key)
+
+	os.Setenv(key, value)
+	load()
+
+	return resetFn
+}
+
+func UnsetAndLoad(key string) func() {
+	originalValue := os.Getenv(key)
+	os.Unsetenv(key)
+	load()
+
+	return func() {
+		os.Setenv(key, originalValue)
+		load()
+	}
 }
