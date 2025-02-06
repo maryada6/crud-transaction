@@ -16,6 +16,7 @@ func load() {
 	if env == "test" {
 		configFile = "application_test"
 	}
+	log.Println("Loading config file:", configFile)
 
 	viper.SetConfigName(configFile)
 	viper.SetConfigType("yml")

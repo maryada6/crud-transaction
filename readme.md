@@ -23,7 +23,7 @@ crud-transaction-main/
 
 ## Build and Run Instructions
 
-### Setting Up the Environment
+### Setting Up the Environment( Here ENV can be `test` or `dev` )
 
 ```bash
 make setup
@@ -38,7 +38,7 @@ make lint
 ### Building the Application
 
 ```bash
-make build
+ENV="dev" make build
 ```
 
 The executable will be created at `out/transaction-service`.
@@ -46,27 +46,25 @@ The executable will be created at `out/transaction-service`.
 ### Running the Application
 
 ```bash
-ENV="ENVIRONMENT" make run
+ENV="dev" make run
 ```
-
-Here ENV can be test or dev
 
 ### Running Tests
 
 ```bash
-make test
+ENV="test" make test
 ```
 
 ### Generating Test Coverage Report
 
 ```bash
-make test.cover
+ENV="test" make test.cover
 ```
 
 ### Generating Cobertura Coverage Report
 
 ```bash
-make test.report
+ENV="test" make test.report
 ```
 
 The coverage report will be generated in `coverage/coverage.html` and `coverage/coverage.xml`.
