@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"crud-transaction/db"
 	"crud-transaction/handlers"
 
 	"github.com/gorilla/mux"
@@ -13,7 +12,6 @@ const (
 )
 
 func SetupRouter() *mux.Router {
-	db.InitDB()
 	router := mux.NewRouter()
 
 	router.Use(loggerMiddleware)
