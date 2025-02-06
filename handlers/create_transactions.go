@@ -16,10 +16,20 @@ func CreateTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Body == nil {
+		http.Error(w, "Request body is empty", http.StatusBadRequest)
+		return
+	}
+
 	var transaction models.Transaction
 	err = json.NewDecoder(r.Body).Decode(&transaction)
 	if err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if transaction.Type == "" {
+		http.Error(w, "Transaction type is required", http.StatusBadRequest)
 		return
 	}
 
@@ -35,9 +45,9 @@ func CreateTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if transaction.ParentID != nil {
+	if transaction.ParentID != 0 {
 		var parentTransaction models.Transaction
-		if err := db.DB.Where("id = ?", *transaction.ParentID).First(&parentTransaction).Error; err != nil {
+		if err := db.DB.Where("id = ?", transaction.ParentID).First(&parentTransaction).Error; err != nil {
 			http.Error(w, "Invalid parent transaction ID", http.StatusBadRequest)
 			return
 		}
