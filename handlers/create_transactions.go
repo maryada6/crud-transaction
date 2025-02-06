@@ -22,13 +22,13 @@ func decodeRequestBody(r *http.Request, v interface{}) error {
 
 func isDuplicateTransaction(transactionID int64) bool {
 	var existingTransaction models.Transaction
-	err := db.DB.Where("id = ?", transactionID).First(&existingTransaction).Error
+	err := db.GetDB().Where("id = ?", transactionID).First(&existingTransaction).Error
 	return err == nil
 }
 
 func isValidParentTransaction(parentID int64) bool {
 	var parentTransaction models.Transaction
-	err := db.DB.Where("id = ?", parentID).First(&parentTransaction).Error
+	err := db.GetDB().Where("id = ?", parentID).First(&parentTransaction).Error
 	return err == nil
 }
 
@@ -71,7 +71,7 @@ func (t *transactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if err := db.DB.Create(&transaction).Error; err != nil {
+	if err := db.GetDB().Create(&transaction).Error; err != nil {
 		handleError(w, "Error saving transaction", http.StatusInternalServerError)
 		return
 	}

@@ -14,8 +14,6 @@ import (
 )
 
 func TestCreateTransaction(t *testing.T) {
-	db.InitDB()
-
 	transactionHandler := NewTransactionHandler()
 
 	t.Run("invalid request", func(t *testing.T) {
@@ -89,7 +87,7 @@ func TestCreateTransaction(t *testing.T) {
 
 	t.Run("duplicate transaction", func(t *testing.T) {
 		defer truncateDB()
-		db.DB.Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
+		db.GetDB().Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
 		transaction := models.Transaction{
 			Amount: 50,
 			Type:   "shopping",
@@ -108,7 +106,7 @@ func TestCreateTransaction(t *testing.T) {
 
 	t.Run("valid transaction with invalid parent ID", func(t *testing.T) {
 		defer truncateDB()
-		db.DB.Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
+		db.GetDB().Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
 		transaction := models.Transaction{
 			Type:     "shopping",
 			Amount:   100.50,
@@ -149,7 +147,7 @@ func TestCreateTransaction(t *testing.T) {
 
 	t.Run("valid transaction with parent ID", func(t *testing.T) {
 		defer truncateDB()
-		db.DB.Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
+		db.GetDB().Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
 		transaction := models.Transaction{
 			Type:     "shopping",
 			Amount:   100.50,
@@ -172,5 +170,5 @@ func TestCreateTransaction(t *testing.T) {
 }
 
 func truncateDB() {
-	db.DB.Exec("TRUNCATE TABLE transactions")
+	db.GetDB().Exec("TRUNCATE TABLE transactions")
 }

@@ -13,8 +13,6 @@ import (
 )
 
 func TestGetTransaction(t *testing.T) {
-	db.InitDB()
-
 	transactionHandler := NewTransactionHandler()
 
 	t.Run("valid transaction", func(t *testing.T) {
@@ -24,7 +22,7 @@ func TestGetTransaction(t *testing.T) {
 			Type:   "shopping",
 			Amount: 100.50,
 		}
-		db.DB.Create(&transaction)
+		db.GetDB().Create(&transaction)
 
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/1", nil)
 		resp := httptest.NewRecorder()
@@ -63,14 +61,12 @@ func TestGetTransaction(t *testing.T) {
 }
 
 func TestGetTransactionsByType(t *testing.T) {
-	db.InitDB()
-
 	transactionHandler := NewTransactionHandler()
 	t.Run("transactions by type", func(t *testing.T) {
 		defer truncateDB()
-		db.DB.Create(&models.Transaction{ID: 1, Type: "shopping", Amount: 100.50})
-		db.DB.Create(&models.Transaction{ID: 2, Type: "shopping", Amount: 50.75})
-		db.DB.Create(&models.Transaction{ID: 3, Type: "food", Amount: 30.20})
+		db.GetDB().Create(&models.Transaction{ID: 1, Type: "shopping", Amount: 100.50})
+		db.GetDB().Create(&models.Transaction{ID: 2, Type: "shopping", Amount: 50.75})
+		db.GetDB().Create(&models.Transaction{ID: 3, Type: "food", Amount: 30.20})
 
 		req, _ := http.NewRequest("GET", "/transactionservice/types/shopping", nil)
 		resp := httptest.NewRecorder()
@@ -113,8 +109,6 @@ func TestGetTransactionsByType(t *testing.T) {
 }
 
 func TestGetTransactionSum(t *testing.T) {
-	db.InitDB()
-
 	transactionHandler := NewTransactionHandler()
 	t.Run("valid transaction sum", func(t *testing.T) {
 		defer truncateDB()
@@ -123,7 +117,7 @@ func TestGetTransactionSum(t *testing.T) {
 			Type:   "shopping",
 			Amount: 100.50,
 		}
-		db.DB.Create(&transaction)
+		db.GetDB().Create(&transaction)
 
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/1", nil)
 		resp := httptest.NewRecorder()
@@ -139,11 +133,11 @@ func TestGetTransactionSum(t *testing.T) {
 
 	t.Run("valid transaction sum with multiple transactions", func(t *testing.T) {
 		defer truncateDB()
-		db.DB.Create(&models.Transaction{ID: 1, Type: "shopping", Amount: 100.50})
-		db.DB.Create(&models.Transaction{ID: 2, Type: "shopping", Amount: 50.75, ParentID: 1})
-		db.DB.Create(&models.Transaction{ID: 3, Type: "food", Amount: 30.20, ParentID: 1})
-		db.DB.Create(&models.Transaction{ID: 4, Type: "food", Amount: 20.15, ParentID: 2})
-		db.DB.Create(&models.Transaction{ID: 5, Type: "food", Amount: 10.10, ParentID: 3})
+		db.GetDB().Create(&models.Transaction{ID: 1, Type: "shopping", Amount: 100.50})
+		db.GetDB().Create(&models.Transaction{ID: 2, Type: "shopping", Amount: 50.75, ParentID: 1})
+		db.GetDB().Create(&models.Transaction{ID: 3, Type: "food", Amount: 30.20, ParentID: 1})
+		db.GetDB().Create(&models.Transaction{ID: 4, Type: "food", Amount: 20.15, ParentID: 2})
+		db.GetDB().Create(&models.Transaction{ID: 5, Type: "food", Amount: 10.10, ParentID: 3})
 
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/1", nil)
 		resp := httptest.NewRecorder()

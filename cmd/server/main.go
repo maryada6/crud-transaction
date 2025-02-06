@@ -6,13 +6,10 @@ import (
 	"net/http"
 
 	"crud-transaction/config"
-	"crud-transaction/db"
 	routes "crud-transaction/router"
 )
 
 func main() {
-	db.InitDB()
-
 	log.Println("Starting Transaction Service API")
 	router := routes.SetupRouter()
 

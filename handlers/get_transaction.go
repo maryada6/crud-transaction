@@ -16,7 +16,7 @@ func (t *transactionHandler) GetTransaction(w http.ResponseWriter, r *http.Reque
 	}
 
 	var transaction models.Transaction
-	if err := db.DB.First(&transaction, transactionID).Error; err != nil {
+	if err := db.GetDB().First(&transaction, transactionID).Error; err != nil {
 		http.NotFound(w, r)
 		return
 	}
@@ -38,7 +38,7 @@ func (t *transactionHandler) GetTransactionsByType(w http.ResponseWriter, r *htt
 	}
 
 	var transactionIDs []int64
-	if err := db.DB.Model(&models.Transaction{}).
+	if err := db.GetDB().Model(&models.Transaction{}).
 		Where("type = ?", typeName).
 		Pluck("id", &transactionIDs).Error; err != nil {
 		http.Error(w, "Error retrieving transaction IDs", http.StatusInternalServerError)

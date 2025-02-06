@@ -11,10 +11,10 @@ import (
 	"crud-transaction/models"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
-func InitDB() {
-	if DB == nil {
+func GetDB() *gorm.DB {
+	if db == nil {
 		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 			config.GetDatabaseHost(),
 			config.GetDatabaseUser(),
@@ -23,15 +23,16 @@ func InitDB() {
 			config.GetDatabasePort())
 		log.Println("Connecting to database")
 		var err error
-		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panic("Failed to connect to database")
 		}
 
-		err = DB.AutoMigrate(&models.Transaction{})
+		err = db.AutoMigrate(&models.Transaction{})
 		if err != nil {
 			log.Panic("Failed to apply database migrations")
 		}
 		fmt.Println("Database connected successfully and migrations applied")
 	}
+	return db
 }

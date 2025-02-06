@@ -12,7 +12,6 @@ import (
 )
 
 func TestSetupRouter(t *testing.T) {
-	db.InitDB()
 	router := SetupRouter()
 
 	t.Run("valid GET transaction", func(t *testing.T) {
@@ -22,7 +21,7 @@ func TestSetupRouter(t *testing.T) {
 			Type:   "shopping",
 			Amount: 100.50,
 		}
-		db.DB.Create(&transaction)
+		db.GetDB().Create(&transaction)
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/1", nil)
 		resp := httptest.NewRecorder()
 		router.ServeHTTP(resp, req)
@@ -44,5 +43,5 @@ func TestSetupRouter(t *testing.T) {
 }
 
 func truncateDB() {
-	db.DB.Exec("TRUNCATE TABLE transactions")
+	db.GetDB().Exec("TRUNCATE TABLE transactions")
 }
