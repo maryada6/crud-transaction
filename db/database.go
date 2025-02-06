@@ -21,7 +21,7 @@ func InitDB() {
 			config.GetDatabasePassword(),
 			config.GetDatabaseName(),
 			config.GetDatabasePort())
-		log.Println("Connecting to database...")
+		log.Println("Connecting to database")
 		var err error
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {

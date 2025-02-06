@@ -14,7 +14,7 @@ func main() {
 	config.Load()
 	db.InitDB()
 
-	log.Println("Starting Transaction Service API...")
+	log.Println("Starting Transaction Service API")
 	router := routes.SetupRouter()
 	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.GetServerPort()), router))
 }
