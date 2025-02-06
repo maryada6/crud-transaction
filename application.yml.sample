@@ -1,6 +1,7 @@
-database:
-  host: "localhost"
-  user: "postgres"
-  password: "password"
-  dbname: "transaction_db"
-  port: "5432"
+DATABASE_HOST: "127.0.0.1"
+DATABASE_USER: "postgres"
+DATABASE_PASSWORD: "password"
+DATABASE_NAME: "transaction_db"
+DATABASE_PORT: "5432"
+PORT: 3000
+ENV: "dev"

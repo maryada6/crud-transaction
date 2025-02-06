@@ -10,12 +10,11 @@ func Load() {
 	viper.AutomaticEnv()
 	_ = viper.ReadInConfig()
 
-	var configFile string
-	env := GetStringWithDefault("ENV", "test")
+	configFile := "application"
+	env := GetStringWithDefault("ENV", "dev")
+
 	if env == "test" {
 		configFile = "application_test"
-	} else {
-		configFile = "application"
 	}
 
 	viper.SetConfigName(configFile)
