@@ -106,7 +106,7 @@ func TestCreateTransaction(t *testing.T) {
 		assert.Contains(t, resp.Body.String(), "Duplicate transaction")
 	})
 
-	t.Run("valid transaction with parent ID", func(t *testing.T) {
+	t.Run("valid transaction with invalid parent ID", func(t *testing.T) {
 		defer truncateDB()
 		db.DB.Create(&models.Transaction{ID: 3, Amount: 50, Type: "shopping"})
 		transaction := models.Transaction{
