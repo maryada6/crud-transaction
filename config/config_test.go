@@ -9,7 +9,7 @@ import (
 
 func TestGetServerPort(t *testing.T) {
 	t.Run("should load test config", func(t *testing.T) {
-		resetFn := SetAndLoad("ENV", "test")
+		resetFn := setAndLoad("ENV", "test")
 		defer resetFn()
 		assert.Equal(t, 0, GetServerPort())
 		assert.Equal(t, "127.0.0.1", GetDatabaseHost())
@@ -26,13 +26,13 @@ func TestGetStringOrPanic(t *testing.T) {
 	})
 
 	t.Run("should not panic", func(t *testing.T) {
-		resetFn := SetAndLoad("ENV", "test")
+		resetFn := setAndLoad("ENV", "test")
 		defer resetFn()
 		assert.NotPanics(t, func() { GetStringOrPanic("ENV") })
 	})
 }
 
-func SetAndLoad(key, value string) func() {
+func setAndLoad(key, value string) func() {
 	resetFn := UnsetAndLoad(key)
 
 	os.Setenv(key, value)
