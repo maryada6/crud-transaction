@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func GetTransaction(w http.ResponseWriter, r *http.Request) {
+func (t *transactionHandler) GetTransaction(w http.ResponseWriter, r *http.Request) {
 	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
@@ -28,7 +28,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
+func (t *transactionHandler) GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 	typeName := r.URL.Path[len("/transactionservice/types/"):]
 
 	if typeName == "" {
@@ -51,7 +51,7 @@ func GetTransactionsByType(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetTransactionSum(w http.ResponseWriter, r *http.Request) {
+func (t *transactionHandler) GetTransactionSum(w http.ResponseWriter, r *http.Request) {
 	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/sum/"):], 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)

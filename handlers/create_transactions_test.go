@@ -18,12 +18,14 @@ func TestCreateTransaction(t *testing.T) {
 	config.Load()
 	db.InitDB()
 
+	transactionHandler := NewTransactionHandler()
+
 	t.Run("invalid request", func(t *testing.T) {
 		defer truncateDB()
 		req, _ := http.NewRequest("POST", "/transactionservice/transaction/1", nil)
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Request body is empty")
@@ -35,7 +37,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusUnprocessableEntity, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid request payload")
@@ -46,7 +48,7 @@ func TestCreateTransaction(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/transactionservice/transaction/abc", nil)
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
@@ -63,7 +65,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Transaction type is required")
@@ -81,7 +83,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Transaction amount must be greater than zero")
@@ -100,7 +102,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusConflict, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Duplicate transaction")
@@ -120,7 +122,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid parent transaction ID")
@@ -138,7 +140,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response map[string]string
@@ -161,7 +163,7 @@ func TestCreateTransaction(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
 
-		CreateTransaction(resp, req)
+		transactionHandler.CreateTransaction(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response map[string]string

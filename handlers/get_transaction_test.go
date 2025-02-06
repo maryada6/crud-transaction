@@ -17,6 +17,8 @@ func TestGetTransaction(t *testing.T) {
 	config.Load()
 	db.InitDB()
 
+	transactionHandler := NewTransactionHandler()
+
 	t.Run("valid transaction", func(t *testing.T) {
 		defer truncateDB()
 		transaction := models.Transaction{
@@ -29,7 +31,7 @@ func TestGetTransaction(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/1", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransaction(resp, req)
+		transactionHandler.GetTransaction(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response models.Transaction
@@ -45,7 +47,7 @@ func TestGetTransaction(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/abc", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransaction(resp, req)
+		transactionHandler.GetTransaction(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
@@ -56,7 +58,7 @@ func TestGetTransaction(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/transaction/999", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransaction(resp, req)
+		transactionHandler.GetTransaction(resp, req)
 
 		assert.Equal(t, http.StatusNotFound, resp.Code)
 	})
@@ -66,6 +68,7 @@ func TestGetTransactionsByType(t *testing.T) {
 	config.Load()
 	db.InitDB()
 
+	transactionHandler := NewTransactionHandler()
 	t.Run("transactions by type", func(t *testing.T) {
 		defer truncateDB()
 		db.DB.Create(&models.Transaction{ID: 1, Type: "shopping", Amount: 100.50})
@@ -75,7 +78,7 @@ func TestGetTransactionsByType(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/types/shopping", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionsByType(resp, req)
+		transactionHandler.GetTransactionsByType(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response []int64
@@ -91,7 +94,7 @@ func TestGetTransactionsByType(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/types/", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionsByType(resp, req)
+		transactionHandler.GetTransactionsByType(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Transaction type is required")
@@ -102,7 +105,7 @@ func TestGetTransactionsByType(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/types/nonexistent", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionsByType(resp, req)
+		transactionHandler.GetTransactionsByType(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response []int64
@@ -116,6 +119,7 @@ func TestGetTransactionSum(t *testing.T) {
 	config.Load()
 	db.InitDB()
 
+	transactionHandler := NewTransactionHandler()
 	t.Run("valid transaction sum", func(t *testing.T) {
 		defer truncateDB()
 		transaction := models.Transaction{
@@ -128,7 +132,7 @@ func TestGetTransactionSum(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/1", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionSum(resp, req)
+		transactionHandler.GetTransactionSum(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response map[string]float64
@@ -148,7 +152,7 @@ func TestGetTransactionSum(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/1", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionSum(resp, req)
+		transactionHandler.GetTransactionSum(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response map[string]float64
@@ -162,7 +166,7 @@ func TestGetTransactionSum(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/abc", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionSum(resp, req)
+		transactionHandler.GetTransactionSum(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
@@ -173,7 +177,7 @@ func TestGetTransactionSum(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/transactionservice/sum/999", nil)
 		resp := httptest.NewRecorder()
 
-		GetTransactionSum(resp, req)
+		transactionHandler.GetTransactionSum(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		var response map[string]float64

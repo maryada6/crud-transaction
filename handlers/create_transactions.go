@@ -32,7 +32,7 @@ func isValidParentTransaction(parentID int64) bool {
 	return err == nil
 }
 
-func CreateTransaction(w http.ResponseWriter, r *http.Request) {
+func (t *transactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
 	if err != nil {
 		handleError(w, "Invalid transaction ID", http.StatusBadRequest)
