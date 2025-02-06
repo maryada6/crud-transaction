@@ -40,14 +40,27 @@ func TestCreateTransaction(t *testing.T) {
 	})
 
 	t.Run("invalid transaction ID", func(t *testing.T) {
-		defer truncateDB()
-		req, _ := http.NewRequest("POST", "/transactionservice/transaction/abc", nil)
-		resp := httptest.NewRecorder()
+		t.Run("transaction ID is not a number", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("POST", "/transactionservice/transaction/abc", nil)
+			resp := httptest.NewRecorder()
 
-		transactionHandler.CreateTransaction(resp, req)
+			transactionHandler.CreateTransaction(resp, req)
 
-		assert.Equal(t, http.StatusBadRequest, resp.Code)
-		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
+
+		t.Run("transaction ID is zero or negative", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("POST", "/transactionservice/transaction/0", nil)
+			resp := httptest.NewRecorder()
+
+			transactionHandler.CreateTransaction(resp, req)
+
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
 	})
 
 	t.Run("invalid transaction type", func(t *testing.T) {

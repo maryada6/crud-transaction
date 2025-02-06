@@ -39,14 +39,27 @@ func TestGetTransaction(t *testing.T) {
 	})
 
 	t.Run("invalid transaction ID", func(t *testing.T) {
-		defer truncateDB()
-		req, _ := http.NewRequest("GET", "/transactionservice/transaction/abc", nil)
-		resp := httptest.NewRecorder()
+		t.Run("transaction ID is not a number", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("GET", "/transactionservice/transaction/abc", nil)
+			resp := httptest.NewRecorder()
 
-		transactionHandler.GetTransaction(resp, req)
+			transactionHandler.GetTransaction(resp, req)
 
-		assert.Equal(t, http.StatusBadRequest, resp.Code)
-		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
+
+		t.Run("transaction ID is less than or equal to zero", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("GET", "/transactionservice/transaction/0", nil)
+			resp := httptest.NewRecorder()
+
+			transactionHandler.GetTransaction(resp, req)
+
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
 	})
 
 	t.Run("transaction not found", func(t *testing.T) {
@@ -152,14 +165,27 @@ func TestGetTransactionSum(t *testing.T) {
 	})
 
 	t.Run("invalid transaction ID", func(t *testing.T) {
-		defer truncateDB()
-		req, _ := http.NewRequest("GET", "/transactionservice/sum/abc", nil)
-		resp := httptest.NewRecorder()
+		t.Run("transaction ID is not a number", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("GET", "/transactionservice/sum/abc", nil)
+			resp := httptest.NewRecorder()
 
-		transactionHandler.GetTransactionSum(resp, req)
+			transactionHandler.GetTransactionSum(resp, req)
 
-		assert.Equal(t, http.StatusBadRequest, resp.Code)
-		assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
+
+		t.Run("transaction ID is negative", func(t *testing.T) {
+			defer truncateDB()
+			req, _ := http.NewRequest("GET", "/transactionservice/sum/-1", nil)
+			resp := httptest.NewRecorder()
+
+			transactionHandler.GetTransactionSum(resp, req)
+
+			assert.Equal(t, http.StatusBadRequest, resp.Code)
+			assert.Contains(t, resp.Body.String(), "Invalid transaction ID")
+		})
 	})
 
 	t.Run("transaction sum not found", func(t *testing.T) {

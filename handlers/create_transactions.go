@@ -39,6 +39,11 @@ func (t *transactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	if transactionID <= 0 {
+		handleError(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
+
 	if r.Body == nil {
 		handleError(w, "Request body is empty", http.StatusBadRequest)
 		return

@@ -27,7 +27,7 @@ run: build ## Run the application
 
 test: ## Run all the tests
 	mkdir -p coverage/
-	GO111MODULE=on go clean -testcache && go test -race ./... -v -p 1 -covermode=atomic -coverprofile=coverage/coverage.out
+	GO111MODULE=on go clean -testcache && go test -race ./... -covermode=atomic -coverprofile=coverage/coverage.out
 
 test.cover: test ## Generate coverage report
 	GO111MODULE=on gocov convert coverage/coverage.out | gocov report 2>&1 | tee coverage/coverage.txt

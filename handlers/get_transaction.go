@@ -15,6 +15,11 @@ func (t *transactionHandler) GetTransaction(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	if transactionID <= 0 {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
+
 	var transaction models.Transaction
 	if err := db.GetDB().First(&transaction, transactionID).Error; err != nil {
 		http.NotFound(w, r)
@@ -56,6 +61,11 @@ func (t *transactionHandler) GetTransactionsByType(w http.ResponseWriter, r *htt
 func (t *transactionHandler) GetTransactionSum(w http.ResponseWriter, r *http.Request) {
 	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/sum/"):], 10, 64)
 	if err != nil {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
+
+	if transactionID <= 0 {
 		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
 		return
 	}
