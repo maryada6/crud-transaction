@@ -37,7 +37,7 @@ func TestCreateTransaction(t *testing.T) {
 
 		CreateTransaction(resp, req)
 
-		assert.Equal(t, http.StatusBadRequest, resp.Code)
+		assert.Equal(t, http.StatusUnprocessableEntity, resp.Code)
 		assert.Contains(t, resp.Body.String(), "Invalid request payload")
 	})
 

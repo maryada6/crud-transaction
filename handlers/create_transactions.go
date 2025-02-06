@@ -9,59 +9,76 @@ import (
 	"crud-transaction/models"
 )
 
+func handleError(w http.ResponseWriter, message string, statusCode int) {
+	http.Error(w, message, statusCode)
+}
+
+func decodeRequestBody(r *http.Request, v interface{}) error {
+	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
+		return err
+	}
+	return nil
+}
+
+func isDuplicateTransaction(transactionID int64) bool {
+	var existingTransaction models.Transaction
+	err := db.DB.Where("id = ?", transactionID).First(&existingTransaction).Error
+	return err == nil
+}
+
+func isValidParentTransaction(parentID int64) bool {
+	var parentTransaction models.Transaction
+	err := db.DB.Where("id = ?", parentID).First(&parentTransaction).Error
+	return err == nil
+}
+
 func CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	transactionID, err := strconv.ParseInt(r.URL.Path[len("/transactionservice/transaction/"):], 10, 64)
 	if err != nil {
-		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		handleError(w, "Invalid transaction ID", http.StatusBadRequest)
 		return
 	}
 
 	if r.Body == nil {
-		http.Error(w, "Request body is empty", http.StatusBadRequest)
+		handleError(w, "Request body is empty", http.StatusBadRequest)
 		return
 	}
 
 	var transaction models.Transaction
-	err = json.NewDecoder(r.Body).Decode(&transaction)
-	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+	if err := decodeRequestBody(r, &transaction); err != nil {
+		handleError(w, "Invalid request payload", http.StatusUnprocessableEntity)
 		return
 	}
 
 	if transaction.Type == "" {
-		http.Error(w, "Transaction type is required", http.StatusBadRequest)
+		handleError(w, "Transaction type is required", http.StatusBadRequest)
 		return
 	}
 
 	if transaction.Amount <= 0 {
-		http.Error(w, "Transaction amount must be greater than zero", http.StatusBadRequest)
+		handleError(w, "Transaction amount must be greater than zero", http.StatusBadRequest)
 		return
 	}
 
 	transaction.ID = transactionID
-	var existingTransaction models.Transaction
-	if err := db.DB.Where("id = ?", transaction.ID).First(&existingTransaction).Error; err == nil {
-		http.Error(w, "Duplicate transaction", http.StatusConflict)
+	if isDuplicateTransaction(transaction.ID) {
+		handleError(w, "Duplicate transaction", http.StatusConflict)
 		return
 	}
 
-	if transaction.ParentID != 0 {
-		var parentTransaction models.Transaction
-		if err := db.DB.Where("id = ?", transaction.ParentID).First(&parentTransaction).Error; err != nil {
-			http.Error(w, "Invalid parent transaction ID", http.StatusBadRequest)
-			return
-		}
+	if transaction.ParentID != 0 && !isValidParentTransaction(transaction.ParentID) {
+		handleError(w, "Invalid parent transaction ID", http.StatusBadRequest)
+		return
 	}
 
 	if err := db.DB.Create(&transaction).Error; err != nil {
-		http.Error(w, "Error saving transaction", http.StatusInternalServerError)
+		handleError(w, "Error saving transaction", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
-	if err != nil {
-		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+	if err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"}); err != nil {
+		handleError(w, "Error encoding response", http.StatusInternalServerError)
 		return
 	}
 }
