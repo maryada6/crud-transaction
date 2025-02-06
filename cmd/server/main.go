@@ -12,6 +12,7 @@ import (
 func main() {
 	log.Println("Starting Transaction Service API")
 	router := routes.SetupRouter()
-	log.Println("Server is running on port", config.GetServerPort())
-	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.GetServerPort()), router))
+	port := config.GetServerPort()
+	log.Println("Server is running on port", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), router))
 }
