@@ -22,7 +22,7 @@ func (t *transactionHandler) GetTransaction(w http.ResponseWriter, r *http.Reque
 
 	var transaction models.Transaction
 	if err := db.GetDB().First(&transaction, transactionID).Error; err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "Transaction not found", http.StatusNotFound)
 		return
 	}
 
